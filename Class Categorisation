@@ -1,0 +1,89 @@
+var EMAIL_SENT = "EMAIL_SENT"
+
+function emailhoodiesa (){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = SpreadsheetApp.setActiveSheet(ss.getSheets()[0]);
+  var startrow = 2
+  var numRows = 300
+  var datarange = sheet.getRange(startrow, 2, numRows, 13);
+  var data = datarange.getValues()
+  for (var i=0; i<data.length; ++i){
+    var row = data[i]
+    var indent = "\n"
+    var emailaddress = row[0]
+    var name = row [1]
+    var contactnumber = row[2]
+    var formclass = row[3]
+    var classno = row[4]
+    var hoodieXS = row[5]
+    var hoodieS = row[6]
+    var hoodieM = row[7]
+    var hoodieL = row[8]
+    var hoodieXL = row[9]
+    var hoodieXXL = row[10]
+    var hoodieprice = 140
+    var total = 0
+    var msgstart = "Dear "+name+" ,"
+    var msgname = "Name: "+name
+    var msgclass = "Class: "+formclass+"("+classno+")"
+    var msgcontactnumber = "\nContact Number:"+ contactnumber
+    var content = "\nYou have ordered:"
+    
+    if (hoodieXS>0){
+      var content= content.concat("\nHoodie XS:",hoodieXS)
+      var hoodieXSprice = hoodieXS*hoodieprice
+      var content = content.concat("\nSub-Total:HK$",hoodieXSprice)
+      var total = total+hoodieXSprice
+    }
+    if (hoodieS >0){
+      var content = content.concat("\nHoodie S:",hoodieS)
+      var hoodieSprice = hoodieS*hoodieprice
+      var content = content.concat("\nSub-Total:HK$",hoodieSprice)
+      var total = total+hoodieSprice
+    }
+    if (hoodieM >0){
+      var content = content.concat("\nHoodie M:",hoodieM)
+      var hoodieMprice = hoodieM*hoodieprice
+      var content = content.concat("\nSub-Total:HK$",hoodieMprice)
+      var total = total+hoodieMprice
+    }
+    if (hoodieL>0){
+      var content = content.concat("\nHoodie L:",hoodieL)
+      var hoodieLprice = hoodieL*hoodieprice
+      var content = content.concat("\nSub-Total:HK$",hoodieLprice)
+      var total = total+hoodieLprice
+    }
+    if (hoodieXL>0){
+      var content = content.concat("\nHoodie XL:",hoodieXL)
+      var hoodieXLprice = hoodieXL*hoodieprice
+      var content = content.concat("\nSub-Total:HK$",hoodieXLprice)
+      var total = total+hoodieXLprice
+    }
+    if (hoodieXXL>0){
+      var content = content.concat("\nHoodie XXL:",hoodieXXL)
+      var hoodieXXLprice = hoodieXXL*hoodieprice
+      var content = content.concat("\nSub-Total:HK$",hoodieXXLprice)
+      var total = total+hoodieXXLprice
+    }
+    var msgtotal = "Overall Total:HK$".concat(total)
+   
+    var msgenquiries = "Please submit the amount to your class representative from 6/2/2017 to 7/2/2017"+"\nFor F.6 students please approach the SAO during recess after the mock exam tomorrow"
+    var feedback = "\nShould you have any problems on our ordering status or would like to change your choice please contact Jerome Kwok at 62902908,if you have enquiries on our payment method or delievery status please feel free to contact Horace Chu at 98159195"
+    var ending = "\nRegards,"+"\nAllan Lee"+"\nTreasurer"+"\nLa Salle College Student Association"
+    var message = msgstart.concat(indent,indent,msgname,indent,msgclass,indent,msgcontactnumber,indent,content,indent,indent,msgtotal,indent,indent,msgenquiries,indent,feedback,indent,indent,ending)
+    var emailstatus = row[11]
+    if (emailaddress!=""){ 
+       sheet.getRange(startrow + i,14).setValue(total)
+    if (emailstatus!= "EMAIL_SENT"){
+    var aliases = GmailApp.getAliases()
+    var subject = "[Reminder][Invoice]La Salle College Hoodie Online Ordering System";
+      GmailApp.sendEmail(emailaddress, subject, message,{'from': aliases[0],name: 'La Salle College Student Association',replyTo:'s12216@lsc.hk'});
+      sheet.getRange(startrow + i, 13).setValue(EMAIL_SENT);
+      SpreadsheetApp.flush();
+    
+    }}else{
+     
+    }   
+       }
+  
+  }
